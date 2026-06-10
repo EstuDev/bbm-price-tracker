@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monitor Perubahan Harga BBM 2026</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #0f172a;
+        }
+        .card-glow {
+            box-shadow: 0 0 25px -5px rgba(59, 130, 246, 0.2);
+        }
+    </style>
+</head>
+<body class="text-slate-100 min-h-screen flex flex-col justify-between">
+
+    <header class="border-b border-slate-800 bg-slate-900/50 backdrop-blur-md sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-4 py-4 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <div class="flex items-center gap-3">
+                <div class="p-2.5 bg-blue-600 rounded-xl text-xl">⛽</div>
+                <div>
+                    <h1 class="text-xl font-bold tracking-tight">BBM Price Tracker</h1>
+                    <p class="text-xs text-slate-400">Data Historis Indonesia (Januari - Juni 2026)</p>
+                </div>
+            </div>
+            <div class="text-right sm:text-right text-center">
+                <span class="text-xs bg-slate-800 border border-slate-700 px-3 py-1.5 rounded-full text-blue-400 font-semibold">
+                    Kondisi Terakhir: 10 Juni 2026
+                </span>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-4 py-8 flex-grow w-full">
+        
+        <div class="mb-10 text-center">
+            <label class="block text-sm font-medium text-slate-400 mb-3">PILIH PERIODE PENYESUAIAN HARGA</label>
+            <div class="inline-flex p-1.5 bg-slate-900 border border-slate-800 rounded-2xl gap-2 overflow-x-auto max-w-full">
+                <button onclick="switchPeriod('jan')" id="btn-jan" class="px-6 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 bg-blue-600 text-white shadow-lg shadow-blue-500/20">
+                    Januari 2026
+                </button>
+                <button onclick="switchPeriod('juni')" id="btn-juni" class="px-6 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 text-slate-400 hover:text-white hover:bg-slate-800">
+                    10 Juni 2026
+                </button>
+            </div>
+            <p id="info-periode" class="text-xs text-slate-500 mt-3 italic">Menampilkan harga BBM yang berlaku per 1 Januari 2026.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="bbm-container">
+            </div>
+
+        <div class="mt-12 p-5 bg-amber-950/20 border border-amber-900/50 rounded-2xl text-sm text-amber-300/90">
+            <strong>💡 Catatan Perubahan Signifikan:</strong> Pada tanggal 10 Juni 2026, PT Pertamina resmi melakukan penyesuaian harga besar-besaran untuk jenis BBM Non-Subsidi tertentu. <strong>Pertamax (RON 92)</strong> mengalami kenaikan tajam dari Rp12.300 menjadi Rp16.250/liter, dan <strong>Pertamax Green 95</strong> naik menjadi Rp17.000/liter. Sementara BBM bersubsidi (Pertalite & Solar) tetap ditahan stabil oleh pemerintah. *(Acuan wilayah DKI Jakarta & sekitarnya).*
+        </div>
+    </main>
+
+    <footer class="border-t border-slate-800 bg-slate-950 py-4 text-center text-xs text-slate-500">
+        &copy; 2026 BBM Dashboard Project — Dikembangkan dengan Animasi Counter & Tailwind.
+    </footer>
+
+    <script>
+        // Data Harga BBM Januari vs 10 Juni 2026 (Acuan DKI Jakarta)
+        const bbmData = {
+            jan: [
+                { name: "Pertalite", ron: "RON 90", type: "Subsidi", price: 10000, color: "border-emerald-500/30 text-emerald-400 bg-emerald-500/5" },
+                { name: "Solar Subsidi", ron: "CN 48", type: "Subsidi", price: 6800, color: "border-teal-500/30 text-teal-400 bg-teal-500/5" },
+                { name: "Pertamax", ron: "RON 92", type: "Non-Subsidi", price: 12300, color: "border-blue-500/30 text-blue-400 bg-blue-500/5" },
+                { name: "Pertamax Green", ron: "RON 95", type: "Non-Subsidi", price: 12900, color: "border-purple-500/30 text-purple-400 bg-purple-500/5" },
+                { name: "Pertamax Turbo", ron: "RON 98", type: "Non-Subsidi", price: 20750, color: "border-red-500/30 text-red-400 bg-red-500/5" },
+                { name: "Dexlite", ron: "CN 51", type: "Non-Subsidi", price: 23000, color: "border-orange-500/30 text-orange-400 bg-orange-500/5" },
+                { name: "Pertamina DEX", ron: "CN 53", type: "Non-Subsidi", price: 24800, color: "border-amber-500/30 text-amber-400 bg-amber-500/5" }
+            ],
+            juni: [
+                { name: "Pertalite", ron: "RON 90", type: "Subsidi", price: 10000, color: "border-emerald-500/30 text-emerald-400 bg-emerald-500/5" },
+                { name: "Solar Subsidi", ron: "CN 48", type: "Subsidi", price: 6800, color: "border-teal-500/30 text-teal-400 bg-teal-500/5" },
+                { name: "Pertamax", ron: "RON 92", type: "Non-Subsidi", price: 16250, color: "border-blue-500/30 text-blue-400 bg-blue-500/5" }, // Kenaikan Signifikan
+                { name: "Pertamax Green", ron: "RON 95", type: "Non-Subsidi", price: 17000, color: "border-purple-500/30 text-purple-400 bg-purple-500/5" }, // Kenaikan Signifikan
+                { name: "Pertamax Turbo", ron: "RON 98", type: "Non-Subsidi", price: 20750, color: "border-red-500/30 text-red-400 bg-red-500/5" },
+                { name: "Dexlite", ron: "CN 51", type: "Non-Subsidi", price: 23000, color: "border-orange-500/30 text-orange-400 bg-orange-500/5" },
+                { name: "Pertamina DEX", ron: "CN 53", type: "Non-Subsidi", price: 24800, color: "border-amber-500/30 text-amber-400 bg-amber-500/5" }
+            ]
+        };
+
+        let currentPrices = {};
+
+        // Inisialisasi Tampilan Awal
+        function initApp() {
+            const container = document.getElementById('bbm-container');
+            container.innerHTML = '';
+
+            // Generate template kartu kosong
+            bbmData.jan.forEach((item, index) => {
+                currentPrices[index] = 0; // Mulai counter dari 0
+                
+                const card = document.createElement('div');
+                card.className = "bg-slate-900 border border-slate-800 rounded-3xl p-6 card-glow flex flex-col justify-between transition-all duration-500 hover:border-slate-700";
+                card.innerHTML = `
+                    <div>
+                        <div class="flex justify-between items-start mb-4">
+                            <span class="text-xs px-3 py-1 rounded-full border ${item.color} font-medium">${item.ron}</span>
+                            <span class="text-[10px] uppercase tracking-wider font-semibold px-2 py-0.5 rounded ${item.type === 'Subsidi' ? 'bg-emerald-950 text-emerald-400' : 'bg-slate-800 text-slate-400'}">${item.type}</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-slate-200 mb-1">${item.name}</h3>
+                    </div>
+                    <div class="mt-6">
+                        <span class="text-xs text-slate-500 block mb-1">Harga per Liter</span>
+                        <div class="flex items-baseline gap-1 text-3xl font-extrabold tracking-tight text-white">
+                            <span class="text-xl font-medium text-slate-400">Rp</span>
+                            <span id="counter-${index}">0</span>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+
+            // Jalankan animasi ke data bulan Januari
+            updateCounters('jan');
+        }
+
+        // Fungsi Animasi Number Counter
+        function animateValue(id, start, end, duration, index) {
+            if (start === end) {
+                document.getElementById(id).innerHTML = end.toLocaleString('id-ID');
+                return;
+            }
+            
+            let startTimestamp = null;
+            const step = (timestamp) => {
+                if (!startTimestamp) startTimestamp = timestamp;
+                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                // Fungsi easing biar animasi mulus melambat di akhir
+                const easeProgress = 1 - Math.pow(1 - progress, 3); 
+                
+                const current = Math.floor(easeProgress * (end - start) + start);
+                document.getElementById(id).innerHTML = current.toLocaleString('id-ID');
+                
+                if (progress < 1) {
+                    window.requestAnimationFrame(step);
+                } else {
+                    document.getElementById(id).innerHTML = end.toLocaleString('id-ID');
+                    currentPrices[index] = end; // Simpan posisi harga saat ini
+                }
+            };
+            window.requestAnimationFrame(step);
+        }
+
+        // Fungsi Update semua counter berdasarkan pilihan periode
+        function updateCounters(period) {
+            const data = bbmData[period];
+            data.forEach((item, index) => {
+                const targetId = `counter-${index}`;
+                const startVal = currentPrices[index] || 0;
+                const endVal = item.price;
+                animateValue(targetId, startVal, endVal, 1000, index); // Durasi 1000ms (1 detik)
+            });
+        }
+
+        // Fungsi Kontrol Navigasi Tombol Periode
+        function switchPeriod(period) {
+            const btnJan = document.getElementById('btn-jan');
+            const btnJuni = document.getElementById('btn-juni');
+            const infoPeriode = document.getElementById('info-periode');
+
+            // Reset style tombol
+            btnJan.className = "px-6 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 text-slate-400 hover:text-white hover:bg-slate-800";
+            btnJuni.className = "px-6 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 text-slate-400 hover:text-white hover:bg-slate-800";
+
+            if (period === 'jan') {
+                btnJan.className = "px-6 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 bg-blue-600 text-white shadow-lg shadow-blue-500/20";
+                infoPeriode.innerHTML = "Menampilkan harga BBM yang berlaku per 1 Januari 2026.";
+            } else {
+                btnJuni.className = "px-6 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 bg-blue-600 text-white shadow-lg shadow-blue-500/20";
+                infoPeriode.innerHTML = "Menampilkan harga BBM terbaru hasil penyesuaian per 10 Juni 2026.";
+            }
+
+            updateCounters(period);
+        }
+
+        // Menjalankan aplikasi saat halaman web dimuat
+        window.onload = initApp;
+    </script>
+</body>
+</html>
